@@ -1,30 +1,25 @@
-use rand::Rng;
-use std::cmp::Ordering;
-use std::io;
 
 fn main() {
-    let sec_ret = rand::thread_rng().gen_range(1..=10);
+    // cộng
+    let sum = 5 + 10;
 
-    println!("Input your guess:");
+    // trừ
+    let difference = 95.5 - 4.3;
 
-    loop {
-        println!("Please input your guess:");
+    // nhân
+    let product = 4 * 30;
 
-        let mut guess_str = String::new(); // Tạo mới chuỗi tại mỗi vòng lặp
+    // chia
+    let quotient = 56.7 / 32.2;
+    let truncated = -5 / 3; // Kết quả là -1
 
-        io::stdin()
-            .read_line(&mut guess_str)
-            .expect("Failed to read line");
+    // phần dư
+    let remainder = 43 % 5;
 
-        let guess: i32 =  guess_str.trim().parse().expect("Please type a number!");
-
-        match guess.cmp(&sec_ret) {
-            Ordering::Equal => {
-                println!("You Win!");
-                break;
-            }
-            Ordering::Less => println!("Too small!"),
-            Ordering::Greater => println!("Too big!"),
-        }
-    }
+    println!("difference of increases: {}", difference);
+    println!("product of increases: {}", product);
+    println!("quotient of increases: {}", quotient);
+    println!("truncated increases: {}", truncated);
+    println!("remainder of increases: {}", remainder);
+    println!("sum of increases: {}", sum);
 }
