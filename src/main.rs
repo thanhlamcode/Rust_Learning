@@ -1,25 +1,15 @@
-
 fn main() {
-    // cộng
-    let sum = 5 + 10;
+    let a = [1, 2, 3, 4, 5];
 
-    // trừ
-    let difference = 95.5 - 4.3;
+    println!("Please enter an array index:");
 
-    // nhân
-    let product = 4 * 30;
+    let mut index = String::new();
 
-    // chia
-    let quotient = 56.7 / 32.2;
-    let truncated = -5 / 3; // Kết quả là -1
+    std::io::stdin()
+        .read_line(&mut index)
+        .expect("Failed to read line");
 
-    // phần dư
-    let remainder = 43 % 5;
-
-    println!("difference of increases: {}", difference);
-    println!("product of increases: {}", product);
-    println!("quotient of increases: {}", quotient);
-    println!("truncated increases: {}", truncated);
-    println!("remainder of increases: {}", remainder);
-    println!("sum of increases: {}", sum);
+    let index: usize = index.trim().parse().expect("Failed to parse integer");
+    
+    println!("Value is: {}", a[index]);
 }
