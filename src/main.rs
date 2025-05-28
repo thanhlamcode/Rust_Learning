@@ -25,11 +25,34 @@ fn main() {
     
     println!("Area is {}", area(&rectangle));
     
-    println!("{:#?}", rectangle)
+    println!("{:#?}", rectangle);
+    
+    
+    let circle = Circle{
+        radius: 1.4
+    };
+    
+    println!("Area is {}", circle.area());
+    println!("Chu vi is {}", circle.cv())
+    
 }
 
 #[derive(Debug)]
 struct Rectangle {
     width: u32,
     height: u32,
+}
+
+struct Circle {
+    radius: f32,
+}
+
+impl Circle {
+    fn area(&self) -> f32 {
+        self.radius * self.radius*3.14
+    }
+    
+    fn cv(&self)-> f32{
+        2.0*3.14*self.radius
+    }
 }
