@@ -1,5 +1,6 @@
-use guessing_game::run_system;
+
+use guessing_game::phone;
 
 fn main() {
-    run_system();
+    phone::list_phone();
 }
