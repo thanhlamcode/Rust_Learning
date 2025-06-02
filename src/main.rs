@@ -1,20 +1,29 @@
-use std::collections::HashMap;
+use std::fs::File;
 
 fn main() {
-    let v = vec![1, 2, 3, 4, 5, 6, 1, 2, 2, 1, 1, 2, 4, 2, 5, 3, 4, 2, 6];
+    fn safe_divide(a: i32, b: i32) -> Result<i32, String> {
+        if b == 0 {
+            return Err("Lỗi: Không thể chia cho 0".to_string());
+        }
 
-
-    let median = v[v.len() / 2];
-    println!("median: {}", median);
-
-    let mut counts = HashMap::new();
-
-    for nums in v {
-        *counts.entry(nums).or_insert(0) += 1;
+        Ok(a / b)
     }
-    println!("counts: {:?}", counts);
 
-    let mode = counts.into_iter().max_by_key(|&(_, count)| count).unwrap();
+    match safe_divide(45, 0) {
+        Ok(n) => println!("{}", n),
+        Err(msg) => println!("{}", msg),
+    }
 
-    println!("mode: {:?}", mode);
+    fn bmi_calculator(height: f32, weight: f32) -> Result<f32, String> {
+        if height == 0.0 {
+            return Err("Loi".to_string());
+        }
+        Ok(weight / (height * height))
+    }
+
+    let bmi = bmi_calculator(60.0, 1.8);
+    match bmi {
+        Ok(n) => println!("{}", n),
+        Err(msg) => println!("{}", msg),
+    }
 }
