@@ -32,7 +32,18 @@ impl Inventory {
 }
 
 fn main() {
+    // Fn
     let x = 10;
     let add_x = |y| y + x; // closure tự bắt biến x từ ngoài
     println!("{}", add_x(5)); // In ra 15
+    // FnMut
+    let mut count = 0;
+    let mut inc = || count += 1; // mượn mutably biến count
+    inc();
+    println!("{}", count); // In ra 1
+    // FnOnce
+    let name = String::from("Rust");
+    let consume = move || println!("Hello, {}", name); // chiếm quyền sở hữu
+    consume();
+    // consume(); // Lỗi nếu gọi lại vì name đã bị move
 }
