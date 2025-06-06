@@ -1,49 +1,31 @@
-#[derive(Debug, PartialEq, Copy, Clone)]
-enum ShirtColor {
-    Red,
-    Blue,
-}
+use std::fmt::Display;
+use std::ops::Deref;
 
-struct Inventory {
-    shirts: Vec<ShirtColor>,
-}
+// Định nghĩa smart pointer MyBox<T>
+struct MyBox<T>(T);
 
-impl Inventory {
-    fn giveaway(&self, user_preference: Option<ShirtColor>) -> ShirtColor {
-        user_preference.unwrap_or_else(|| self.most_stocked())
+impl<T> MyBox<T> {
+    fn new(x: T) -> MyBox<T> {
+        MyBox(x)
     }
+}
 
-    fn most_stocked(&self) -> ShirtColor {
-        let mut num_red = 0;
-        let mut num_blue = 0;
+// Triển khai trait Deref để có thể dùng toán tử *
+impl<T> Deref for MyBox<T> {
+    type Target = T;
 
-        for color in &self.shirts {
-            match color {
-                ShirtColor::Red => num_red += 1,
-                ShirtColor::Blue => num_blue += 1,
-            }
-        }
-        if num_red > num_blue {
-            ShirtColor::Red
-        } else {
-            ShirtColor::Blue
-        }
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 
 fn main() {
-    // Fn
-    let x = 10;
-    let add_x = |y| y + x; // closure tự bắt biến x từ ngoài
-    println!("{}", add_x(5)); // In ra 15
-    // FnMut
-    let mut count = 0;
-    let mut inc = || count += 1; // mượn mutably biến count
-    inc();
-    println!("{}", count); // In ra 1
-    // FnOnce
-    let name = String::from("Rust");
-    let consume = move || println!("Hello, {}", name); // chiếm quyền sở hữu
-    consume();
-    // consume(); // Lỗi nếu gọi lại vì name đã bị move
+    let x = 5;
+    let y = MyBox::new(x);
+
+    // Dùng *y để truy cập giá trị bên trong MyBox
+    assert_eq!(5, *y);
+
+    println!("Giá trị y trỏ đến là: {}", *y); // In ra: Giá trị y trỏ đến là: 5
+
 }
