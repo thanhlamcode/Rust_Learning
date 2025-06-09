@@ -1,31 +1,64 @@
-use std::fmt::Display;
-use std::ops::Deref;
+use std::cell::RefCell;
+use std::rc::{Rc, Weak};
 
-// Định nghĩa smart pointer MyBox<T>
-struct MyBox<T>(T);
-
-impl<T> MyBox<T> {
-    fn new(x: T) -> MyBox<T> {
-        MyBox(x)
-    }
-}
-
-// Triển khai trait Deref để có thể dùng toán tử *
-impl<T> Deref for MyBox<T> {
-    type Target = T;
-
-    fn deref(&self) -> &Self::Target {
-        &self.0
-    }
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    parent: RefCell<Weak<Node>>,          // Con trỏ yếu (con biết cha, nhưng không giữ cha sống)
+    children: RefCell<Vec<Rc<Node>>>,     // Cha sở hữu các con
 }
 
 fn main() {
-    let x = 5;
-    let y = MyBox::new(x);
+    // Tạo node con
+    let leaf = Rc::new(Node {
+        value: 3,
+        parent: RefCell::new(Weak::new()), // ban đầu chưa có cha
+        children: RefCell::new(vec![]),
+    });
 
-    // Dùng *y để truy cập giá trị bên trong MyBox
-    assert_eq!(5, *y);
+    println!(
+        "Trước khi tạo branch:\n  leaf strong = {}, weak = {}",
+        Rc::strong_count(&leaf),
+        Rc::weak_count(&leaf),
+    );
 
-    println!("Giá trị y trỏ đến là: {}", *y); // In ra: Giá trị y trỏ đến là: 5
+    {
+        // Tạo node cha và gán leaf làm con
+        let branch = Rc::new(Node {
+            value: 5,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![Rc::clone(&leaf)]),
+        });
 
+        // Gán cha cho leaf bằng Weak (không tạo vòng sở hữu)
+        *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+
+        println!(
+            "\nTrong scope:\n  branch strong = {}, weak = {}",
+            Rc::strong_count(&branch),
+            Rc::weak_count(&branch),
+        );
+        println!(
+            "  leaf strong = {}, weak = {}",
+            Rc::strong_count(&leaf),
+            Rc::weak_count(&leaf),
+        );
+
+        println!(
+            "  leaf.parent = {:?}",
+            leaf.parent.borrow().upgrade().map(|node| node.value)
+        );
+    } // branch ra khỏi scope => strong_count = 0 => bị drop
+
+    println!(
+        "\nSau khi branch ra khỏi scope:\n  leaf strong = {}, weak = {}",
+        Rc::strong_count(&leaf),
+        Rc::weak_count(&leaf),
+    );
+
+    // Upgrade sẽ trả về None vì cha đã bị drop
+    println!(
+        "  leaf.parent = {:?}",
+        leaf.parent.borrow().upgrade().map(|node| node.value)
+    );
 }
